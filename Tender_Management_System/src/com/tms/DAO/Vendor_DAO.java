@@ -1,4 +1,4 @@
-package com.tsm.DAO;
+package com.tms.DAO;
 
 import com.tms.Exception.RegisterNewVendorException;
 

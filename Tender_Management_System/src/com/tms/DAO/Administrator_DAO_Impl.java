@@ -1,4 +1,4 @@
-package com.tsm.DAO;
+package com.tms.DAO;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

@@ -1,4 +1,4 @@
-package com.tsm.UseCases;
+package com.tms.UseCases;
 
 import java.util.Scanner;
 

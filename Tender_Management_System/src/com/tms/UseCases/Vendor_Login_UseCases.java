@@ -1,9 +1,9 @@
-package com.tsm.UseCases;
+package com.tms.UseCases;
 
 import java.util.Scanner;
 
-import com.tsm.DAO.Vendor_DAO;
-import com.tsm.DAO.Vendor_DAO_Impl;
+import com.tms.DAO.Vendor_DAO;
+import com.tms.DAO.Vendor_DAO_Impl;
 
 public class Vendor_Login_UseCases {
 

@@ -1,10 +1,10 @@
-package com.tsm.UseCases;
+package com.tms.UseCases;
 
 import java.util.Scanner;
 
+import com.tms.DAO.Administrator_DAO;
+import com.tms.DAO.Administrator_DAO_Impl;
 import com.tms.bean.Administrator;
-import com.tsm.DAO.Administrator_DAO;
-import com.tsm.DAO.Administrator_DAO_Impl;
 
 public class Administrator_Registration_UseCases {
 
