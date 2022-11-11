@@ -13,7 +13,7 @@ public class Bids_DAO_Impl implements Bids_DAO{
 	@Override
 	public String bidAgainstTender(int offerPrice, int bid_tender, int bid_vendor, String status)
 			throws BidInsertException {
-String msg = "Not Inserted";
+       String msg = "Not Inserted";
 		
 		try(Connection conn = DBUtility.provideTenderConnection()){
 			

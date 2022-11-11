@@ -1,13 +1,16 @@
 package com.tms.DAO;
 
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.tms.Exception.RegisterNewVendorException;
+import com.tms.Exception.VendorDetailsExecption;
 import com.tms.Utility.DBUtility;
+import com.tms.bean.Vendor;
 
 public class Vendor_DAO_Impl implements Vendor_DAO{
 
@@ -17,46 +20,25 @@ public class Vendor_DAO_Impl implements Vendor_DAO{
 		
 		try(Connection conn = DBUtility.provideTenderConnection()) {
 			
-			PreparedStatement psE = conn.prepareStatement("Select * from administrator where email =?");
+			PreparedStatement ps = conn.prepareStatement("Select * from administrator where email =? AND password=?");
 			
-			psE.setString(1, username);
+			ps.setString(1, username);
+			ps.setString(2, password);
 			
-			ResultSet rsE = psE.executeQuery();
-			
-			if(rsE.next()) {
-				
-				PreparedStatement ps = conn.prepareStatement("Select email from administrator where password = ?");
-				
-				ps.setString(1, password);
-				
-				ResultSet rs = ps.executeQuery();
-				
-				if(rs.next()) {
+			ResultSet rs=ps.executeQuery();
+			if(rs.next()) {
+				String email = rs.getString("email");
+				if(email.equals(username)) {
 					
-					String email = rs.getString("email");
-					
-					if(email.equals(username)) {
-					
-						status = "Login Successful...";
-						
-						}else {
-						status = "username and password mismatch....\n";
-						
-						}
-					
-				}else {
-					status = "password not correct according username\n";
-				}
-				
-				
+					status = "Login Successful...";
 			}else {
 				status = "username not found..\n";
+			}
 			}
 					
 		} catch (SQLException e) {
 			status = e.getMessage();
 		}
-		
 		
 		return status;
 		
@@ -65,52 +47,73 @@ public class Vendor_DAO_Impl implements Vendor_DAO{
 	@Override
 	public String registerNewVendor(String name, int gst_no, String edate, String email, String password,
 			int signature_id) throws RegisterNewVendorException {
-    String status = "Login failed...";
+    
+    String status = "Not Inserted...";
+	
+	try(Connection conn = DBUtility.provideTenderConnection()) {
+		
+		PreparedStatement ps = conn.prepareStatement("insert into vendor(vname,GST_no,edate,email,password,signature_id) values(?,?,?,?,?,?)");
+		
+		ps.setString(1, name);
+		ps.setInt(2, gst_no);
+		ps.setString(3, edate);
+		ps.setNString(4, email);
+		ps.setString(5, password);
+		ps.setInt(6, signature_id);
+		
+		int x = ps.executeUpdate();
+		
+		if(x>0)
+			status = "Registered Successfully...\n";
+		else
+			throw new RegisterNewVendorException("Technical error...\n");
+			
+		
+	} catch (SQLException e) {
+		status = e.getMessage();
+	}
+	
+	
+	return status;
+	}
+
+	@Override
+	public List<Vendor> viewAllVendorsList() throws VendorDetailsExecption {
+		
+    List<Vendor> list = new ArrayList<>();
 		
 		try(Connection conn = DBUtility.provideTenderConnection()) {
 			
-			PreparedStatement psE = conn.prepareStatement("Select * from vendor where email =?");
+			PreparedStatement ps = conn.prepareStatement("Select * from vendor");
 			
-			String username = null;
-			psE.setString(1, username);
+			ResultSet rs = ps.executeQuery();
 			
-			ResultSet rsE = psE.executeQuery();
-			
-			if(rsE.next()) {
+			while(rs.next()) {
 				
-				PreparedStatement ps = conn.prepareStatement("Select email from vendor where password = ?");
+				int i = rs.getInt("id");
+				String vn = rs.getString("vname");
+				int gs = rs.getInt("GST_no");
+				String ed = rs.getString("edate");
+				String e = rs.getString("email");
+				String p = rs.getString("password");
+				int si = rs.getInt("signature_id");
 				
-				ps.setString(1, password);
+				Vendor vendor = new Vendor(i, vn, gs, ed, e, p, si);
 				
-				ResultSet rs = ps.executeQuery();
+				list.add(vendor);
 				
-				if(rs.next()) {
-					
-					String email1 = rs.getString("email");
-					
-					if(email1.equals(username)) {
-					
-						status = "Login Successful...";
-						
-						
-					}else {
-						status = "username and password mismatch....\n";
-					}
-					
-				}else {
-					status = "password not correct according username\n";
-				}
-				
-				
-			}else {
-				status = "username not found..\n";
 			}
-		
+			
+			
 		} catch (SQLException e) {
-			status = e.getMessage();
+			System.out.println(e.getMessage());
 		}
 		
-		return status;
+		if(list.isEmpty())
+			throw new VendorDetailsExecption("List Is Empty...\n");
+		
+		
+		return list;
 	}
 
 }
