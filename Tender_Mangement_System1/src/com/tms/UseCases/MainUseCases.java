@@ -25,7 +25,9 @@ public class MainUseCases {
 				break;
 			
 		    case 2:
-			     Login_Administrator_UseCases.login(args);
+			     
+//			     boolean n=Login_Administrator_UseCases.login(args);
+			     if(Login_Administrator_UseCases.login(args)) {
 						while(true) {
 						System.out.println("\n1. Register new Vendor\n"
 								+ "2. View all the Vendors\n"
@@ -52,13 +54,19 @@ public class MainUseCases {
 							break;
 						case 5:
 							ViewAll_Bids_UseCases.ViewAll_Bids(args);
-							
-					}
+							break;
+						case 6:
+							Vendor_Tender_UseCases.VenderTender(args);
+							break;
+						case 7:
+							System.out.println("Thankyou!\n");
+					}	
 			}
-				
+	}
   
 		    case 3:
-		    	Vendor_Login_UseCases.vendor_Login(args);
+		    	if(Vendor_Login_UseCases.vendor_Login(args)) {
+		    	while(true) {
 		    	System.out.println("\n1. View all the Tenders list\n"
 						+"2. Place a Bid against a Tender\n"
 						+"3. View status of a Bid(Whether Selected or Not)\n"
@@ -67,7 +75,6 @@ public class MainUseCases {
 		    	System.out.println("Enter Choice:");
 		    	int choice2 = sc.nextInt();
 				switch(choice2) {
-				
 				case 1:
 					ViewAll_Tenders_Details_UseCases.viewAllTenders(args);
 					break;
@@ -78,15 +85,31 @@ public class MainUseCases {
 					break;
 					
 				case 3:
+					ViewAllBidsByBid_No_Tender_Usecases.ViewAllBidsByBid_No(args);
+				
+					break;
 					
+				case 4:
+					ViewOwn_BidHistory_UseCases.ViewOwn_BidHistory(args);
+					
+					break;
+					
+				case 5:
+					System.out.println("Thankyou!\n");
+		
+//				default:
+//					System.out.println("choice is out of range... Enter valid choice!\n"); 
+				}	
 				 
-				}
-		    	 
+	}
+		    	}
+		    default:
+			System.out.println("choice is out of range... Enter valid choice!\n"); 
 			}	 
 		    	
 		}catch (Exception e) {
 			System.out.println(e.getMessage());
 		}
-		sc.close();
-	}
-	}
+		//sc.close();
+	 }
+}

@@ -8,23 +8,22 @@ import com.tms.DAO.Bids_DAO_Impl;
 import com.tms.Exception.BidDetailsException;
 import com.tms.bean.Bids;
 
-public class ViewAll_Bids_UseCases {
-
-	public static void ViewAll_Bids(String[] args) {
-		Scanner sc=new Scanner(System.in);
-		System.out.println("Enter Bid connection Id with respective Tender:");
-		int bt = sc.nextInt();
+public class ViewOwn_BidHistory_UseCases {
+	
+	public static void ViewOwn_BidHistory(String[] args) {
 		
-		Bids_DAO dao6 = new Bids_DAO_Impl();
+		Scanner sc= new Scanner(System.in);
+		
+		System.out.println("Enter Your Vendor Id:");
+		int yvi = sc.nextInt();
+		
+		Bids_DAO dao8 = new Bids_DAO_Impl();
 		
 		
 		try {
-			List<Bids> list5 = dao6.viewAllBidsOf_A_Tender(bt);
+			List<Bids> list7 = dao8.ViewOwnBidHistory(yvi);
 			
-			System.out.println("\nList of all the Bids of a tender Id "+bt+" :");
-			System.out.println("============================================");
-			
-			list5.forEach(s-> {
+			list7.forEach(s-> {
 				
 				System.out.println("Bid No.: "+s.getBid_no());
 				System.out.println("Offer Price: "+s.getOfferPrice());
@@ -36,11 +35,13 @@ public class ViewAll_Bids_UseCases {
 			});
 			
 			
+			
 		} catch (BidDetailsException e) {
 			
 			System.out.println(e.getMessage());
 		}
-   sc.close();
+		sc.close();
+		
 	}
 
 }

@@ -43,7 +43,7 @@ public class Register_Vendor_UseCases {
 			System.out.println(e.getMessage());
 		}
 		
-		
+		sc.close();
 
 	}
 

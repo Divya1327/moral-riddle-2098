@@ -41,6 +41,8 @@ public class Administrator_Registration_UseCases {
 		String result = dao.registerAdmin(id, name, dob, email, password);
 		
 		System.out.println(result);
+		
+		sc.close();
 
 	}
 

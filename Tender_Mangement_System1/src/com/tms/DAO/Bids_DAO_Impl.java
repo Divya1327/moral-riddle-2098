@@ -137,4 +137,146 @@ public class Bids_DAO_Impl implements Bids_DAO{
 		return list;
 	}
 
+	@Override
+	public List<Bids> viewAllBidsByBid_No_Tender(int bid_no, int bid_tender) throws BidDetailsException {
+List<Bids> list = new ArrayList<>();
+		
+		try(Connection conn = DBUtility.provideTenderConnection()) {
+			
+			PreparedStatement psc = conn.prepareStatement("select count(bid_no) from bids group by bid_tender having bid_tender=?");
+			psc.setInt(1, bid_tender);
+			
+			ResultSet rsc = psc.executeQuery();
+			if(rsc.next()) {
+				
+				int count = rsc.getInt("count(bid_no)");
+				
+				if(count > 2) {
+					
+					
+					PreparedStatement ps1 = conn.prepareStatement("select bid_no from bids where offer_price = (select max(offer_price) from bids group by bid_tender having bid_tender = ?)");
+					
+					ps1.setInt(1, bid_tender);
+					
+					ResultSet rs1 = ps1.executeQuery();
+					
+					if(rs1.next()) {
+						
+						int bn = rs1.getInt("bid_no");
+							
+							if(bn == bid_no) {
+								
+								PreparedStatement psu = conn.prepareStatement("update bids set status_of_bid = 'Selected' where bid_no =?");
+								
+								psu.setInt(1, bid_no);
+								
+								int x = psu.executeUpdate();
+								
+								if(x>0) {
+									PreparedStatement psf = conn.prepareStatement("select * from bids where bid_no =?");
+									
+									psf.setInt(1, bid_no);
+									
+									ResultSet rs3 = psf.executeQuery();
+									
+									if(rs3.next()) {
+										
+										int bi = rs3.getInt("bid_no");
+										int p = rs3.getInt("offer_price");
+										int bt = rs3.getInt("bid_tender");
+										int vi = rs3.getInt("vendor_id");
+										String st = rs3.getString("status_of_bid");
+										
+										Bids bids = new Bids(bi, p, bt, vi, st);
+										
+										list.add(bids);
+										
+									}
+									
+								}
+							}else {
+								PreparedStatement psf = conn.prepareStatement("select * from bids where bid_no =?");
+								
+								psf.setInt(1, bid_no);
+								
+								ResultSet rs2 = psf.executeQuery();
+								
+								if(rs2.next()) {
+									
+									int bi = rs2.getInt("bid_no");
+									int p = rs2.getInt("offer_price");
+									int bt = rs2.getInt("bid_tender");
+									int vi = rs2.getInt("vendor_id");
+									String st = rs2.getString("status_of_bid");
+									
+									Bids bids = new Bids(bi, p, bt, vi, st);
+									
+									list.add(bids);
+									
+								}
+							}
+							
+						
+					}
+					
+					
+				}
+				else {
+					throw new BidDetailsException("Pending...");
+				}
+				
+			}
+			
+		
+			
+			
+		} catch (SQLException e) {
+			throw new BidDetailsException(e.getMessage());
+		}
+		
+		if(list.isEmpty())
+			throw new BidDetailsException("No Bid record found...");
+		
+		return list;
+	}
+
+	@Override
+	public List<Bids> ViewOwnBidHistory(int v_id) throws BidDetailsException {
+		List<Bids> list = new ArrayList<>();
+		
+		try(Connection conn = DBUtility.provideTenderConnection()) {
+			
+			PreparedStatement psl = conn.prepareStatement("select * from bids where vendor_id = ?");
+			
+			psl.setInt(1, v_id);
+			
+			ResultSet rsl = psl.executeQuery();
+			
+			while(rsl.next()) {
+				
+				int bi = rsl.getInt("bid_no");
+				int p = rsl.getInt("offer_price");
+				int bt = rsl.getInt("bid_tender");
+				int vi = rsl.getInt("vendor_id");
+				String st = rsl.getString("status_of_bid");
+				
+				Bids bids = new Bids(bi, p, bt, vi, st);
+				
+				list.add(bids);
+				
+			}
+			
+			
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+		
+		
+		if(list.isEmpty())
+			throw new BidDetailsException("List is empty...");
+		
+		
+		return list;
+	}
+
 }

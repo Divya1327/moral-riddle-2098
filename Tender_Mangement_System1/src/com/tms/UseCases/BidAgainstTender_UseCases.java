@@ -33,7 +33,7 @@ public class BidAgainstTender_UseCases {
 			System.out.println(e.getMessage());
 		}
 		
-
+		sc.close();
 	}
 
 }

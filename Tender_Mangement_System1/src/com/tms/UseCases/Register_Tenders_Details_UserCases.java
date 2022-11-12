@@ -60,7 +60,7 @@ public class Register_Tenders_Details_UserCases {
 			System.out.println(e.getMessage());
 		}
 		
-		
+		sc.close();
 	}
 
 }
